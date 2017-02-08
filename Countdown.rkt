@@ -19,7 +19,7 @@
      n
   (select-numbers l)))
 
-;Define a function (generate) that takes in two values (min, max) which will calculate the all]
+;Define a function (generate) that takes in two values (min, max) which will calculate the all
 ;the possible numbers between the min and max.
 (define (generate min max)
   (if (< max min)
@@ -30,3 +30,6 @@
 ;Main Function Calculate
 (define (calculate x list)
   (+ (car list) x))
+
+(generate 101 999)
+(select-numbers nums)
