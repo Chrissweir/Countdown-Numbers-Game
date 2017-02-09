@@ -6,6 +6,9 @@
 ;Define empty list to hold the 6 random numbers.
 (define n(list))
 
+;Define a variable called target-number that will store the value of the target number.
+(define target-number 0)
+
 ;Define a function (select-numbers) that will take in a list, then get a random value from that list.
 ;It will then remove that value from the givin list, and then add that value to the list n.
 ;The function will then check if the list n is equal to 6, meaning there are 6 numbers in the
@@ -19,17 +22,14 @@
      n
   (select-numbers l)))
 
-;Define a function (generate) that takes in two values (min, max) which will calculate the all
-;the possible numbers between the min and max.
-(define (generate min max)
-  (if (< max min)
-      0
-    (cons min (generate (+ min 1) max))))
-
+;Define a function (get-target-number) that takes in two values (min, max) which will calculate a random
+;number between the min and max.
+(define (get-target-number min max)
+  (set! target-number(+ (random min max) target-number)))
 
 ;Main Function Calculate
 (define (calculate x list)
   (+ (car list) x))
 
-(generate 101 999)
-(select-numbers nums)
+(get-target-number 101 999)
+;(select-numbers nums)
