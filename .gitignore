@@ -1,6 +1,6 @@
 #Racket .gitignore
-2	# DrRacket autosave files
-3	*~
-4	\#*
-5	.\#*
-6	*.bak
+# DrRacket autosave files
+*~
+\#*
+.\#*
+*.bak
