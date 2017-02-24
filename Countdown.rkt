@@ -11,17 +11,42 @@
 (define selected-numbers(list))
 
 ;Define a variable called target-number that will store the value of the target number.
-(define target-number 0)
+(define target-number 15)
 
 ;Define custom operators
-(define operators'(?+ ?- ?* ?/))
+(define operators '(?+ ?- ?/ ?*))
+
+(define ns (make-base-namespace))
+
+
+;Define a function that adds two numbers
+(define (cal l)
+  (display(string-append "(+" (~v (car l)) " " (~v (cadr l)) ") = "(~v(+(car l)(cadr l)))"\n"))
+  (display(string-append "(-" (~v (car l)) " " (~v (cadr l)) ") = "(~v(-(car l)(cadr l)))"\n"))
+  (display(string-append "(/" (~v (car l)) " " (~v (cadr l)) ") = "(~v(/(car l)(cadr l)))"\n"))
+  (display(string-append "(*" (~v (car l)) " " (~v (cadr l)) ") = "(~v(*(car l)(cadr l)))"\n"))
+  )
+
+(define (?+ l)
+  (display(string-append "(+" (~v (car l)) " " (~v (cadr l)) ") = "(~v(+(car l)(cadr l)))"\n"))
+  (+(car l)(cadr l)))
+
+(define (?- l)
+  (display(string-append "(-" (~v (car l)) " " (~v (cadr l)) ") = "(~v(-(car l)(cadr l)))"\n")))
+
+(define (?/ l)
+  (display(string-append "(/" (~v (car l)) " " (~v (cadr l)) ") = "(~v(/(car l)(cadr l)))"\n")))
+
+(define (?* l)
+  (display(string-append "(*" (~v (car l)) " " (~v (cadr l)) ") = "(~v(*(car l)(cadr l)))"\n")))
+
 
 ;Define a function (select-numbers) that will take in a list, then using a for loop[1], get a random[2] value
 ;from that list using list-ref[3]. It will then remove[4] that value from the givin list, and then add that value
 ;to the list (selected-numbers) using set![5]. The for loop is set to loop 6 times allowing for 6 numbers to be assigned to
 ;the list(selected-numbers).
 (define (select-numbers numbers)
-(for([i 6])
+(for([i 2])
   (define random-number(list-ref numbers (random (length numbers))))
   (set! numbers(remove random-number numbers))
   (set! selected-numbers(cons random-number selected-numbers))))
@@ -32,55 +57,79 @@
   (set! target-number(+ (random min max) target-number)) target-number)
 
 ;Main Function Calculate
-(define (calculate x list operators)
+(define (calculate x operators)
   (display "Countdown Number Game Solver\n============================\n")
   (display(string-append "Numbers to choose from: " (~v nums) "\n"))
   (select-numbers nums)
   (display(string-append "Numbers selected: " (~v selected-numbers) "\n"))
-  (display(string-append "Target number: " (~v (get-target-number 101 1000)) "\n" )));Min = 101, Max - 1000
+  ;(display(string-append "Target number: " (~v (get-target-number 101 1000)) "\n" ));Min = 101, Max - 1000
 
 
+
+
+  ;(define sets(combinations selected-numbers 2))
+  (define sets(permutations selected-numbers))
+  (for([set sets])
+    (display(string-append "\nSet: " (~v set) "\n"))
+    (for([o operators])
+      (define test(?+ set))
+      (if(= test target-number)
+         (display (cons o set))
+          0
+          )
+                  
+            ;(define mmm(string-append (~v(cons o selected-numbers))))
+    ;(define test(eval (read (open-input-string (string-append mmm))) ns))
+     ; (display o))
+    ;(for([n set])
+     ; (display(string-append "Number: " (~v n) "\n")))
+  ;(map cal sets)
+  ;(cartesian-product operators sets
+      )))
+
+
+  
 ;Call the Main Function
-(calculate target-number selected-numbers operators)
-
+(calculate target-number operators)
 
 ;Custom operators - NOT FINALIZED
-(define (?+ a b)
-  (cond
-    [(null? a) 0] 
-    [(null? b) 0] 
-    [(< a b) 0]
-    [(zero? a) 0]
-    [else (+ a b)]))
+;(define (?+ a b)
+;  (cond
+;    [(null? a) 0] 
+;    [(null? b) 0] 
+;    [(< a b) 0]
+;    [(zero? a) 0]
+;    [else (+ a b)]))
+;
+;(define (?- a b)
+;  (cond
+;    [(null? a) 0] 
+;    [(null? b) 0] 
+;    [(< a b) 0]
+;    [(zero? b) 0]
+;    [else (- a b)]))
+;
+;(define (?* a b)
+;  (cond
+;    [(null? a) 0] 
+;    [(null? b) 0] 
+;    [(< a b) 0]
+;    [(= a 1) 0]
+;    [(= b 1) 0]
+;    [(= a 0) 0]
+;    [(= b 0) 0]
+;    [else (* a b)]))
 
-(define (?- a b)
-  (cond
-    [(null? a) 0] 
-    [(null? b) 0] 
-    [(< a b) 0]
-    [(zero? b) 0]
-    [else (- a b)]))
+;(define (?/ a b)
+;  (cond
+;    [(null? a) 0] 
+;    [(null? b) 0] 
+;    [(< a b) 0]
+;    [(zero? b) 0]
+;    [(= b 1) 0]
+;    [(inexact? (/ a b)) 0]
+;    [else (/ a b)]))
 
-(define (?* a b)
-  (cond
-    [(null? a) 0] 
-    [(null? b) 0] 
-    [(< a b) 0]
-    [(= a 1) 0]
-    [(= b 1) 0]
-    [(= a 0) 0]
-    [(= b 0) 0]
-    [else (* a b)]))
-
-(define (?/ a b)
-  (cond
-    [(null? a) 0] 
-    [(null? b) 0] 
-    [(< a b) 0]
-    [(zero? b) 0]
-    [(= b 1) 0]
-    [(inexact? (/ a b)) 0]
-    [else (/ a b)]))
 
 ;REFERENCES
 ;================================
