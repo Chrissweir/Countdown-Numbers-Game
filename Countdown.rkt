@@ -104,9 +104,50 @@
   )
 
 ;Call the main search method
-(menu)
-(display (~a "\nTotal Permutations: " permCount "\n"))
-(display (~a "Correct Permutations: " correctCount ))
+;(menu)
+;(display (~a "\nTotal Permutations: " permCount "\n"))
+;(display (~a "Correct Permutations: " correctCount ))
+
+;Attempting Reverse Polish Notation approach
+(define start-perm (list '+ '+ '+ '+ 1 1 1 1))
+(define perms (remove-duplicates (permutations start-perm)))
+
+;Calculate RPN
+(define (calculate-rpn expr)
+  (for/fold ([stack '()]) ([token expr])
+    (printf "~a\t -> ~a~N" token stack)
+    (match* (token stack)
+     [((? number? n) s) (cons n s)]
+     [('+ (list x y s ___)) (cons (+ x y) s)]
+     [('- (list x y s ___)) (cons (- y x) s)]
+     [('* (list x y s ___)) (cons (* x y) s)]
+     [('/ (list x y s ___)) (cons (/ y x) s)]
+     [(x s) (error "calculate-RPN: Cannot calculate the expression:" 
+                   (reverse (cons x s)))])))
+
+;Function to check if a valid rpn
+(define (valid-rpn? e[s 0])
+  (if(null? e)
+     (if (= s 1)
+         #t
+         #f)
+     (if(number? (car e) )
+        (valid-rpn? (cdr e) (+ s 1))
+        (if(> s 1)
+           (valid-rpn? (cdr e) (- s 1))
+           #f))))
+
+;Function to make a perm into a rpn expression and calculates the expression if valid rpn
+(define (make-rpn l)
+  (if(valid-rpn? (append (list 1 1) l (list '+)))
+     (calculate-rpn(append (list 1 1) l (list '+)))
+     0)
+  )
+
+
+(select-numbers nums)
+(map make-rpn perms)
+
 
 ;REFERENCES
 ;================================
