@@ -140,3 +140,20 @@ If this function returns true then the expression is calculated using the follow
      [(x s) (error "calculate-RPN: Cannot calculate the expression:" 
                    (reverse (cons x s)))])])))
 ```
+
+This function has been modified to check if each expression that evaluates is equal to the target number, in which case the expression will be added to a list to be outputted later. It also attempts to filter out expressions that wont work such as ones where it tries to divide by 0, where it returns a negative number, where it tries to divide by a larger number, or where the target answer is met but there is still numbers on the stack.
+```
+ (if (= y 0)
+                                (cons 0 s)
+                                (if (= x 0)
+                                    (cons 0 s)
+                                    (if(exact-positive-integer? (/ x y))
+                                       (if (=(/ x y) target-number)
+                                           (if(= (length temp-stack) 2)
+                                           (begin
+                                           (set! answerList(cons (~a (reverse temp-stack)) answerList)) (cons (/ x y) s)) (cons (/ x y) s))
+                                    (cons (/ x y) s))(cons 0 s))))]
+```
+The expression that evaluate to the target number are then outputted once all expression have been checked.
+```
+ (remove-duplicates answerList))
