@@ -160,17 +160,17 @@
      [('+ (list x y s ___)) (if (=(+ x y) target-number)
                                 (if(= (length stack) 2)
                                    (begin
-                                (set! tempList(cons (~a (reverse temp-stack) "\n") tempList)) (cons (+ x y) s)) (cons (+ x y) s)) (cons (+ x y) s))]
+                                (set! tempList(cons (~a (reverse temp-stack)) tempList)) (cons (+ x y) s)) (cons (+ x y) s)) (cons (+ x y) s))]
      [('- (list x y s ___)) (if(< x y)
                                (cons 0 s)
                                (if (=(- x y) target-number)
                                 (if(= (length stack) 2)
                                 (begin
-                                (set! tempList(cons (~a (reverse temp-stack) "\n") tempList)) (cons (- x y) s)) (cons (- x y) s)) (cons (- x y) s)))]
+                                (set! tempList(cons (~a (reverse temp-stack)) tempList)) (cons (- x y) s)) (cons (- x y) s)) (cons (- x y) s)))]
      [('* (list x y s ___)) (if (=(* x y) target-number)
                                 (if(= (length stack) 2)
                                    (begin
-                                (set! tempList(cons (~a (reverse temp-stack) "\n") tempList)) (cons (* x y) s)) (cons (* x y) s)) (cons (* x y) s))]
+                                (set! tempList(cons (~a (reverse temp-stack)) tempList)) (cons (* x y) s)) (cons (* x y) s)) (cons (* x y) s))]
      [('/ (list x y s ___)) (if (= y 0)
                                 (cons 0 s)
                                 (if (= x 0)
@@ -179,7 +179,7 @@
                                        (if (=(/ x y) target-number)
                                            (if(= (length temp-stack) 2)
                                            (begin
-                                           (set! tempList(cons (~a (reverse temp-stack) "\n") tempList)) (cons (/ x y) s)) (cons (/ x y) s))
+                                           (set! tempList(cons (~a (reverse temp-stack)) tempList)) (cons (/ x y) s)) (cons (/ x y) s))
                                     (cons (/ x y) s))(cons 0 s))))]
      [(x s) (error "calculate-RPN: Cannot calculate the expression:" 
                    (reverse (cons x s)))])])))
