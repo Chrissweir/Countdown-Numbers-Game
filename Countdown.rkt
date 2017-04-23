@@ -21,7 +21,8 @@
 (define target-number 0)
 
 ;Define custom operators
-(define operators (list '+ '+ '+ '+ '+ '- '- '- '- '- '* '* '* '* '* '/ '/ '/ '/ '/))
+(define operators(list "+" "-" "/" "*"))
+(define rpn-operators (list '+ '+ '+ '+ '+ '- '- '- '- '- '* '* '* '* '* '/ '/ '/ '/ '/))
 
 (define permCount 0)
 (define correctCount 0)
@@ -29,6 +30,9 @@
 ;Define a function to construct the equation
 (define (createEq oper a b)
   (~a "( " oper " "   a  " "  b " )"))
+
+;Define a temp list
+(define tempList null)
 
 ;Define a function (select-numbers) that will take in a list, then using a for loop[1], get a random[2] value
 ;from that list using list-ref[3]. It will then remove[4] that value from the givin list, and then add that value
@@ -44,12 +48,12 @@
     (set! numbers(remove random-number numbers))
     (set! rpn-selected-numbers(cons random-number rpn-selected-numbers)))
   (for([i 4])
-    (define random-op(list-ref operators (random (length operators))))
-    (set! operators(remove random-op operators))
+    (define random-op(list-ref rpn-operators (random (length rpn-operators))))
+    (set! rpn-operators(remove random-op rpn-operators))
     (set! selected-operators(cons random-op selected-operators)))
-    (for([i 1])
-    (define random-op(list-ref operators (random (length operators))))
-    (set! operators(remove random-op operators))
+  (for([i 1])
+    (define random-op(list-ref rpn-operators (random (length rpn-operators))))
+    (set! rpn-operators(remove random-op rpn-operators))
     (set! rpn-selected-operators(cons random-op rpn-selected-operators))))
 
 ;Define a function (get-target-number) that takes in two values (min, max) which will calculate a random
@@ -92,7 +96,6 @@
       ;Evaluate if answer is equal to the answer number
       (if ( = currentAnswer target-number)
           (begin
-            ;(display (string-append  " success" "\n" ))
             (display (~a  currentEq " = " currentAnswer "\n") )
             (set! permCount (+ permCount 1))
             (set! correctCount (+ correctCount 1)))
@@ -129,6 +132,10 @@
 ;==========================================================================================
 ;Menu
 (define (rpn-menu)
+  ;(set! target-number 500)
+  (select-numbers nums)
+  (define perms (remove-duplicates (permutations (append selected-numbers selected-operators))))
+  ;(set! tempList (create-List ))
   (display "Countdown Number Game Solver\n============================\n")
   (display(string-append "Numbers to choose from: " (~v nums) "\n"))
   (display(string-append "Numbers selected: " (~v (append rpn-selected-numbers selected-numbers)) "\n"))
@@ -136,31 +143,61 @@
   (display "\nCalculating.....\n")
   (display "==================\n")
   (map make-rpn perms)
+  ;(calculate-rpn (list 10 50 '* 1 '-))
+  (display (string-append (~v (remove-duplicates tempList)) "\n"))
   )
-
-(select-numbers nums)
-;(define permss (append (remove-duplicates (permutations selected-numbers)) (remove-duplicates(combinations operators 5))))
-(define perms (remove-duplicates (permutations (append selected-numbers selected-operators))))
+  ;(define permss (remove-duplicates (permutations (append (selected-numbers) (remove-duplicates(combinations operators 5))))))
 
 ;Calculate RPN
 (define (calculate-rpn expr)
+  (define temp-stack '(Answer: ))
   (for/fold ([stack '()]) ([token expr])
     ;(printf "~a\t -> ~a~N" token stack)
-    (cond[(eqv? stack target-number)
-          (display "Match")]
-         [else
+       (set! temp-stack(cons token temp-stack))
+    (cond[
     (match* (token stack)
      [((? number? n) s) (cons n s)]
+     [('+ (list x y s ___)) (if (=(+ x y) target-number)
+                                (if(= (length stack) 2)
+                                   (begin
+                                (set! tempList(cons (~a (reverse temp-stack) "\n") tempList)) (cons (+ x y) s)) (cons (+ x y) s)) (cons (+ x y) s))]
+     [('- (list x y s ___)) (if(< x y)
+                               (cons 0 s)
+                               (if (=(- x y) target-number)
+                                (if(= (length stack) 2)
+                                (begin
+                                (set! tempList(cons (~a (reverse temp-stack) "\n") tempList)) (cons (- x y) s)) (cons (- x y) s)) (cons (- x y) s)))]
+     [('* (list x y s ___)) (if (=(* x y) target-number)
+                                (if(= (length stack) 2)
+                                   (begin
+                                (set! tempList(cons (~a (reverse temp-stack) "\n") tempList)) (cons (* x y) s)) (cons (* x y) s)) (cons (* x y) s))]
+     [('/ (list x y s ___)) (if (= y 0)
+                                (cons 0 s)
+                                (if (= x 0)
+                                    (cons 0 s)
+                                    (if(exact-positive-integer? (/ x y))
+                                       (if (=(/ x y) target-number)
+                                           (if(= (length temp-stack) 2)
+                                           (begin
+                                           (set! tempList(cons (~a (reverse temp-stack) "\n") tempList)) (cons (/ x y) s)) (cons (/ x y) s))
+                                    (cons (/ x y) s))(cons 0 s))))]
+     [(x s) (error "calculate-RPN: Cannot calculate the expression:" 
+                   (reverse (cons x s)))])])))
+
+#|(match* (token stack)
+     [((? number? n) s) (cons n s)]
      [('+ (list x y s ___)) (cons (+ x y) s)]
-     [('- (list x y s ___)) (cons (- y x) s)]
+     [('- (list x y s ___)) (if (< x y)
+                             (display "false")   
+                             (cons (- y x) s))]
      [('* (list x y s ___)) (cons (* x y) s)]
      [('/ (list x y s ___)) (if (= y 0)
                                 (cons 0 s)
                                 (if (= x 0)
                                     (cons 0 s)
-                                    (cons (/ x y) s)))]
-     [(x s) (error "calculate-RPN: Cannot calculate the expression:" 
-                   (reverse (cons x s)))])])))
+                                    (if(< x y)
+                                       (display "false")
+                                       (cons (/ x y) s))))]|#
 
 ;Function to check if a valid rpn
 (define (valid-rpn? e[s 0])
@@ -176,7 +213,7 @@
 (define (make-rpn l)
   (if(valid-rpn? (append rpn-selected-numbers l rpn-selected-operators))
      (calculate-rpn(append rpn-selected-numbers l rpn-selected-operators))
-     #f)
+     "")
   )
 
 (rpn-menu)
