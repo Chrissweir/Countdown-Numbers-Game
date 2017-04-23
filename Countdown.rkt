@@ -139,7 +139,8 @@
   (display "==================\n")
   (map make-rpn perms)
   (remove-duplicates answerList))
- 
+
+;Adapted from https://rosettacode.org/wiki/Parsing/RPN_calculator_algorithm#Racket
 ;Calculate RPN
 (define (calculate-rpn expr)
   (define temp-stack '(Answer: ))
@@ -149,19 +150,22 @@
     (cond[
     (match* (token stack)
      [((? number? n) s) (cons n s)]
-     [('+ (list x y s ___)) (if (=(+ x y) target-number)
+     [('+ (list x y s ___)) (if(exact-positive-integer? (+ x y))
+                               (if (=(+ x y) target-number)
                                 (if(= (length stack) 2)
                                    (begin
-                                (set! answerList(cons (~a (reverse temp-stack)) answerList)) (cons (+ x y) s)) (cons (+ x y) s)) (cons (+ x y) s))]
-     [('- (list x y s ___)) (if(exact-positive-integer? (- x y))
+                                (set! answerList(cons (~a (reverse temp-stack)) answerList)) (cons (+ x y) s)) (cons (+ x y) s)) (cons (+ x y) s))(cons 0 s))]
+     [('- (list x y s ___)) (if(not(negative? (- x y)))
+                               (if(> x y)
                                (if (=(- x y) target-number)
                                 (if(= (length stack) 2)
                                 (begin
-                                (set! answerList(cons (~a (reverse temp-stack)) answerList)) (cons (- x y) s)) (cons (- x y) s)) (cons (- x y) s))(cons 0 s))]
-     [('* (list x y s ___)) (if (=(* x y) target-number)
+                                (set! answerList(cons (~a (reverse temp-stack)) answerList)) (cons (- x y) s)) (cons (- x y) s)) (cons (- x y) s))(cons 0 s))(cons 0 s))]
+     [('* (list x y s ___)) (if(exact-positive-integer? (* x y))
+                               (if (=(* x y) target-number)
                                 (if(= (length stack) 2)
                                    (begin
-                                (set! answerList(cons (~a (reverse temp-stack)) answerList)) (cons (* x y) s)) (cons (* x y) s)) (cons (* x y) s))]
+                                (set! answerList(cons (~a (reverse temp-stack)) answerList)) (cons (* x y) s)) (cons (* x y) s)) (cons (* x y) s))(cons 0 s))]
      [('/ (list x y s ___)) (if (= y 0)
                                 (cons 0 s)
                                 (if (= x 0)
@@ -197,7 +201,7 @@
        (set! permCount (+ permCount 1))))
 
 ;Function for user calculation
-(define (rpn l t)
+(define (solvecount l t)
   (set! target-number t)
   (define check (remove-duplicates(permutations l)))
   (map isvalid? check)
@@ -209,7 +213,7 @@
   (display "Countdown Number Game Solver\n============================\n")
   (display "1. To run my brute force algorithm type (menu)\n")
   (display "2. To run my rpn algorithm type (rpn-menu)\n")
-  (display "3. To run your own valid rpn equation type (rpn (list 'EG. 10 50 '* 2 '-') target number)\n")
+  (display "3. To run your own valid rpn equation type (solvecount (list 'EG. 10 50 '* 2 '-') target number)\n")
   (display "You can only select any option once, you must run the file again to start again"))
 (main-menu)
 
