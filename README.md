@@ -4,10 +4,10 @@
 **Module**: Theory of Algorithms <br>
 **Lecturer:** Dr. Ian McLoughlin <br>
 
-## Introduction ##
+# Introduction #
 The aim of this project was to solve the Countdown Numbers Game problem using the Racket functional programming language . I have created a program that calculates the possible combinations of six numbers that evaluate in a Equation to a single answer number with two different algorithms: A Brute Force algorithm, and a Reverse Polish Notation algorithm.
 
-## Brute Force Algorithm ##
+# Brute Force Algorithm #
 I originally started with my own brute force algorithm which iterates over every possible permutation of the equation. I chose this approach as at the time as I did not know of any other way to attempt this problem. To get an idea of how to develop this algorithm I first had to research the calculation factors of the game. From reading the article at http://www.datagenetics.com/blog/august32014/index.html along with studying solutions to the problem that are written in other programming languages at https://www.reddit.com/r/dailyprogrammer/comments/452omr/20160210_challenge_253_intermediate_countdown/, I understood the problem better and I tried to implement some of the optimizations into my algorithm to improve the space and time complexity. When running the program on my laptop the calculation finishes in 1-2 minutes iterating over approximately 800 - 900 thousand permutations.  However, this figure varies from time to time.
 
 I used nested loops to check each number and operator which then called the method again over each iteration. I did this based upon the branching factor of Tree Data Structures, eg. https://www.tutorialspoint.com/data_structures_algorithms/tree_data_structure.htm
@@ -72,3 +72,6 @@ Correct Permutations: 2
 ## Limitations: ##
 * The program currently prints out duplicate answers to the solved equations.
 * The time complexity is rather large but with extra tweaks to the algorithm it could be reduced, however I was unable do as such.
+
+# Reverse Polish Notation #
+I secondly attempted to implement **Reverse Polish Notation (RPN)** which is a way of expressing arithmetic expressions that avoids the use of brackets to define priorities for evaluation of operators. I first heard about this method when it was mentioned in a lecture by Dr. Ian McLoughlin. I realized my brute force algorithm was not efficient so I decided to research this method. The article at http://www-stone.ch.cam.ac.uk/documentation/rrf/rpn.html provided me with the basic knowledge of how this algorithm works. 
