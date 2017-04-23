@@ -157,7 +157,7 @@ This function has been modified to check if each expression that evaluates is eq
 The expression that evaluate to the target number are then outputted once all expression have been checked.
 ```
  (remove-duplicates answerList))
-
+```
 # Executing the application #
 
 ## Getting Started ##
