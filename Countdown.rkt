@@ -14,31 +14,37 @@
 (define selected-numbers(list))
 ;Define empty list called rpn-selected-numbers to hold 2 random numbers for rpn.
 (define rpn-selected-numbers(list))
+;Define empty list called selected-operators to hold 4 random operators.
 (define selected-operators(list))
+;Define empty list called rpn-selected-operators to hold a random operator for rpn.
 (define rpn-selected-operators(list))
 
 ;Define a variable called target-number that will store the value of the target number.
 (define target-number 0)
 
-;Define custom operators
+;Define operators
 (define operators(list "+" "-" "/" "*"))
+
+;Define rpn-operators
 (define rpn-operators (list '+ '+ '+ '+ '+ '- '- '- '- '- '* '* '* '* '* '/ '/ '/ '/ '/))
 
+;Count for permutations
 (define permCount 0)
 (define correctCount 0)
 
-;Define a function to construct the equation
-(define (createEq oper a b)
-  (~a "( " oper " "   a  " "  b " )"))
+;Define answer list
+(define answerList null)
 
-;Define a temp list
-(define tempList null)
-
-;Define a function (select-numbers) that will take in a list, then using a for loop[1], get a random[2] value
+;Define functions that will take in a list, then using a for loop[1], get a random[2] value
 ;from that list using list-ref[3]. It will then remove[4] that value from the givin list, and then add that value
-;to the list (selected-numbers) using set![5]. The for loop is set to loop 6 times allowing for 6 numbers to be assigned to
-;the list(selected-numbers).
+;to the list (selected-numbers) using set![5].
 (define (select-numbers numbers)
+  (for([i 6])
+    (define random-number(list-ref numbers (random (length numbers))))
+    (set! numbers(remove random-number numbers))
+    (set! selected-numbers(cons random-number selected-numbers))))
+
+(define (rpn-select-numbers numbers)
   (for([i 4])
     (define random-number(list-ref numbers (random (length numbers))))
     (set! numbers(remove random-number numbers))
@@ -68,15 +74,16 @@
   (display(string-append "Numbers to choose from: " (~v nums) "\n"))
   (display(string-append "Numbers selected: " (~v selected-numbers) "\n"))
   (display(string-append "Target Number: " (~v(get-target-number 101 1000))"\n"));Min = 101, Max - 1000))))
-  (display "\nCalculating.....\n")
+  (display "\nCalculating please wait.....\n")
+  (display "==========================================================================\n")
   (define sets(remove-duplicates(permutations selected-numbers)))
   (for ([set sets])
     (define firstValue (car set))
     (set! set (remove firstValue set))
-    (calculate set firstValue)
-    )
-  (display "==========================================================================")
-  )
+    (calculate set firstValue))
+  (display (~a "\nTotal Permutations: " permCount "\n"))
+  (display (~a "Correct Permutations: " correctCount "\n" ))
+  (remove-duplicates answerList))
   
 
 ;Initial method for beginning the search
@@ -96,46 +103,34 @@
       ;Evaluate if answer is equal to the answer number
       (if ( = currentAnswer target-number)
           (begin
-            (display (~a  currentEq " = " currentAnswer "\n") )
+            ;(display (~a  currentEq " = " currentAnswer "\n") )
+            (set! answerList(cons (~a  currentEq " = " currentAnswer)  answerList))
             (set! permCount (+ permCount 1))
             (set! correctCount (+ correctCount 1)))
             
           (begin
             ;(display (string-append (~v currentEq) " = "(~v currentAnswer) "\n") )
-            (set! permCount (+ permCount 1))
-            )) ;TODO return)
+            (set! permCount (+ permCount 1))))
         
       ;Evaluate if the answer is a negative number or a fraction
       (if (exact-positive-integer? currentAnswer )
           (begin
             ;Call the function again 
             (calculate selected-numbers currentEq))
-            
-          (display ""))
-      )
-    )
-  )
+          (display "")))))
 
 ;Method for calculating the current equation
 (define (createEquation oAnswer sign currentNumber)
-  (~a "( " sign " "   oAnswer  " "  (~v currentNumber) " )")
-  )
-
-;Call the main search method
-;(menu)
-;(display (~a "\nTotal Permutations: " permCount "\n"))
-;(display (~a "Correct Permutations: " correctCount ))
+  (~a "( " sign " "   oAnswer  " "  (~v currentNumber) " )"))
 
 
 ;==========================================================================================
 ;Attempting Reverse Polish Notation approach
 ;==========================================================================================
-;Menu
+;RPN-Menu
 (define (rpn-menu)
-  ;(set! target-number 500)
-  (select-numbers nums)
+  (rpn-select-numbers nums)
   (define perms (remove-duplicates (permutations (append selected-numbers selected-operators))))
-  ;(set! tempList (create-List ))
   (display "Countdown Number Game Solver\n============================\n")
   (display(string-append "Numbers to choose from: " (~v nums) "\n"))
   (display(string-append "Numbers selected: " (~v (append rpn-selected-numbers selected-numbers)) "\n"))
@@ -143,11 +138,8 @@
   (display "\nCalculating.....\n")
   (display "==================\n")
   (map make-rpn perms)
-  ;(calculate-rpn (list 10 50 '* 1 '-))
-  (display (string-append (~v (remove-duplicates tempList)) "\n"))
-  )
-  ;(define permss (remove-duplicates (permutations (append (selected-numbers) (remove-duplicates(combinations operators 5))))))
-
+  (remove-duplicates answerList))
+ 
 ;Calculate RPN
 (define (calculate-rpn expr)
   (define temp-stack '(Answer: ))
@@ -160,17 +152,16 @@
      [('+ (list x y s ___)) (if (=(+ x y) target-number)
                                 (if(= (length stack) 2)
                                    (begin
-                                (set! tempList(cons (~a (reverse temp-stack)) tempList)) (cons (+ x y) s)) (cons (+ x y) s)) (cons (+ x y) s))]
-     [('- (list x y s ___)) (if(< x y)
-                               (cons 0 s)
+                                (set! answerList(cons (~a (reverse temp-stack)) answerList)) (cons (+ x y) s)) (cons (+ x y) s)) (cons (+ x y) s))]
+     [('- (list x y s ___)) (if(exact-positive-integer? (- x y))
                                (if (=(- x y) target-number)
                                 (if(= (length stack) 2)
                                 (begin
-                                (set! tempList(cons (~a (reverse temp-stack)) tempList)) (cons (- x y) s)) (cons (- x y) s)) (cons (- x y) s)))]
+                                (set! answerList(cons (~a (reverse temp-stack)) answerList)) (cons (- x y) s)) (cons (- x y) s)) (cons (- x y) s))(cons 0 s))]
      [('* (list x y s ___)) (if (=(* x y) target-number)
                                 (if(= (length stack) 2)
                                    (begin
-                                (set! tempList(cons (~a (reverse temp-stack)) tempList)) (cons (* x y) s)) (cons (* x y) s)) (cons (* x y) s))]
+                                (set! answerList(cons (~a (reverse temp-stack)) answerList)) (cons (* x y) s)) (cons (* x y) s)) (cons (* x y) s))]
      [('/ (list x y s ___)) (if (= y 0)
                                 (cons 0 s)
                                 (if (= x 0)
@@ -179,25 +170,10 @@
                                        (if (=(/ x y) target-number)
                                            (if(= (length temp-stack) 2)
                                            (begin
-                                           (set! tempList(cons (~a (reverse temp-stack)) tempList)) (cons (/ x y) s)) (cons (/ x y) s))
+                                           (set! answerList(cons (~a (reverse temp-stack)) answerList)) (cons (/ x y) s)) (cons (/ x y) s))
                                     (cons (/ x y) s))(cons 0 s))))]
      [(x s) (error "calculate-RPN: Cannot calculate the expression:" 
                    (reverse (cons x s)))])])))
-
-#|(match* (token stack)
-     [((? number? n) s) (cons n s)]
-     [('+ (list x y s ___)) (cons (+ x y) s)]
-     [('- (list x y s ___)) (if (< x y)
-                             (display "false")   
-                             (cons (- y x) s))]
-     [('* (list x y s ___)) (cons (* x y) s)]
-     [('/ (list x y s ___)) (if (= y 0)
-                                (cons 0 s)
-                                (if (= x 0)
-                                    (cons 0 s)
-                                    (if(< x y)
-                                       (display "false")
-                                       (cons (/ x y) s))))]|#
 
 ;Function to check if a valid rpn
 (define (valid-rpn? e[s 0])
@@ -212,14 +188,32 @@
 ;Function to make a perm into a rpn expression and calculates the expression if valid rpn
 (define (make-rpn l)
   (if(valid-rpn? (append rpn-selected-numbers l rpn-selected-operators))
-     (calculate-rpn(append rpn-selected-numbers l rpn-selected-operators))
-     "")
-  )
+     (calculate-rpn(append rpn-selected-numbers l rpn-selected-operators)) ""))
 
-(rpn-menu)
+;Function to check if the user rquation is valid.
+(define (isvalid? l)
+  (if(valid-rpn? l)
+       (calculate-rpn l)
+       (set! permCount (+ permCount 1))))
 
-;(map make-rpn perms)
-;(menu)
+;Function for user calculation
+(define (rpn l t)
+  (set! target-number t)
+  (define check (remove-duplicates(permutations l)))
+  (map isvalid? check)
+  (~a "Failed attempts: " permCount)
+  (remove-duplicates answerList))
+
+;Main menu
+(define (main-menu)
+  (display "Countdown Number Game Solver\n============================\n")
+  (display "1. To run my brute force algorithm type (menu)\n")
+  (display "2. To run my rpn algorithm type (rpn-menu)\n")
+  (display "3. To run your own valid rpn equation type (rpn (list 'EG. 10 50 '* 2 '-') target number)\n")
+  (display "You can only select any option once, you must run the file again to start again"))
+(main-menu)
+
+
 ;REFERENCES
 ;================================
 ;[1]: for (https://docs.racket-lang.org/guide/for.html).
