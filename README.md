@@ -158,6 +158,20 @@ The expression that evaluate to the target number are then outputted once all ex
 ```
  (remove-duplicates answerList))
 ```
+## Limitations ##
+I have found that even though I have tried to implement filters to stop the calculation of certian expressions, these filters dont wont such as checking if a smaller number tries to take away a bigger number.
+```
+(if(not(negative? (- x y)))
+   (if(> x y)
+```
+Also similar expressions both get evaluated.
+```
+(* 10 50)
+;and
+(* 50 10)
+```
+If I found a way to filter out these expressions the algorithm would run faster.
+
 # Executing the application #
 
 ## Getting Started ##
