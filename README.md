@@ -1,8 +1,8 @@
 # Countdown Numbers Game #
 
-**Student** : Christopher Weir- G00309429
-**Module**: Theory of Algorithms
-**Lecturer:** Dr. Ian McLoughlin
+**Student** : Christopher Weir- G00309429 <br>
+**Module**: Theory of Algorithms <br>
+**Lecturer:** Dr. Ian McLoughlin <br>
 
 ## Introduction ##
 The aim of this project was to solve the Countdown Numbers Game problem using the Racket functional programming language . I have created a program that calculates the possible combinations of six numbers that evaluate in a Equation to a single answer number with two different algorithms: A Brute Force algorithm, and a Reverse Polish Notation algorithm.
