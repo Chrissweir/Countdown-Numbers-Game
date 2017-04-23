@@ -157,3 +157,43 @@ This function has been modified to check if each expression that evaluates is eq
 The expression that evaluate to the target number are then outputted once all expression have been checked.
 ```
  (remove-duplicates answerList))
+
+# Executing the application #
+
+## Getting Started ##
+
+Download and extract the zip folder from this repository.                
+
+### Prerequisites ###
+
+DrRacket - download [here](https://racket-lang.org/download/)
+
+### Installing ###
+
+How to install [Racket](https://www.youtube.com/watch?v=UOqcLGGKVr8) windows
+
+## Deployment ##
+
+From DrRacket --> File tab --> open --> select .rkt file from file explorer.
+
+### Example Command ###
+***The application can only be run once so you must rerun the file to select another option.***
+To run the Brute Force Algorithm type:
+```
+(menu)
+```
+
+To run the Reverse Polish Notation Algorithm type:
+```
+(rpn-menu)
+```
+
+To run the RPN with your own expression type:
+*Change out the numbers and operators for your own.
+```
+(solvecount (list 10 50 '* 2 '- 8 '/))
+```
+
+## Built With ##
+
+* [The Racket programming language using DrRacket](https://racket-lang.org/) - The Racket Programming Environment version 6.7.    
