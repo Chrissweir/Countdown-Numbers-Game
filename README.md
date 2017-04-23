@@ -75,3 +75,68 @@ Correct Permutations: 2
 
 # Reverse Polish Notation #
 I secondly attempted to implement **Reverse Polish Notation (RPN)** which is a way of expressing arithmetic expressions that avoids the use of brackets to define priorities for evaluation of operators. I first heard about this method when it was mentioned in a lecture by Dr. Ian McLoughlin. I realized my brute force algorithm was not efficient so I decided to research this method. The article at http://www-stone.ch.cam.ac.uk/documentation/rrf/rpn.html provided me with the basic knowledge of how this algorithm works. 
+
+I first created a list of four numbers with four operators, this list was to be the base of the algorithm.
+```
+  (define perms (remove-duplicates (permutations (append selected-numbers selected-operators))))
+```
+
+A requirement of RPN is to have two numbers at the start of the  expression and an operator at the end, so I created a function that adds these. 
+```
+;Function to make a perm into a rpn expression and calculates the expression if valid rpn
+(define (make-rpn l)
+  (if(valid-rpn? (append rpn-selected-numbers l rpn-selected-operators))
+     (calculate-rpn(append rpn-selected-numbers l rpn-selected-operators)) ""))
+```
+This function then calls the valid-rpn? function which checks if the expression is a valid rpn expression.
+```
+;Function to check if a valid rpn
+(define (valid-rpn? e[s 0])
+  (if(null? e)
+     (if (= s 1) #t #f)
+     (if(number? (car e) )
+        (valid-rpn? (cdr e) (+ s 1))
+        (if(> s 1)
+           (valid-rpn? (cdr e) (- s 1))
+           #f))))
+```
+If this function returns true then the expression is calculated using the following function which I adapted from https://rosettacode.org/wiki/Parsing/RPN_calculator_algorithm#Racket
+```
+;Calculate RPN
+(define (calculate-rpn expr)
+  (define temp-stack '(Answer: ))
+  (for/fold ([stack '()]) ([token expr])
+    ;(printf "~a\t -> ~a~N" token stack)
+       (set! temp-stack(cons token temp-stack))
+    (cond[
+    (match* (token stack)
+     [((? number? n) s) (cons n s)]
+     [('+ (list x y s ___)) (if(exact-positive-integer? (+ x y))
+                               (if (=(+ x y) target-number)
+                                (if(= (length stack) 2)
+                                   (begin
+                                (set! answerList(cons (~a (reverse temp-stack)) answerList)) (cons (+ x y) s)) (cons (+ x y) s)) (cons (+ x y) s))(cons 0 s))]
+     [('- (list x y s ___)) (if(not(negative? (- x y)))
+                               (if(> x y)
+                               (if (=(- x y) target-number)
+                                (if(= (length stack) 2)
+                                (begin
+                                (set! answerList(cons (~a (reverse temp-stack)) answerList)) (cons (- x y) s)) (cons (- x y) s)) (cons (- x y) s))(cons 0 s))(cons 0 s))]
+     [('* (list x y s ___)) (if(exact-positive-integer? (* x y))
+                               (if (=(* x y) target-number)
+                                (if(= (length stack) 2)
+                                   (begin
+                                (set! answerList(cons (~a (reverse temp-stack)) answerList)) (cons (* x y) s)) (cons (* x y) s)) (cons (* x y) s))(cons 0 s))]
+     [('/ (list x y s ___)) (if (= y 0)
+                                (cons 0 s)
+                                (if (= x 0)
+                                    (cons 0 s)
+                                    (if(exact-positive-integer? (/ x y))
+                                       (if (=(/ x y) target-number)
+                                           (if(= (length temp-stack) 2)
+                                           (begin
+                                           (set! answerList(cons (~a (reverse temp-stack)) answerList)) (cons (/ x y) s)) (cons (/ x y) s))
+                                    (cons (/ x y) s))(cons 0 s))))]
+     [(x s) (error "calculate-RPN: Cannot calculate the expression:" 
+                   (reverse (cons x s)))])])))
+```
