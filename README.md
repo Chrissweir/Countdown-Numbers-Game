@@ -177,7 +177,7 @@ How to install [Racket](https://www.youtube.com/watch?v=UOqcLGGKVr8) windows
 From DrRacket --> File tab --> open --> select .rkt file from file explorer.
 
 ### Example Command ###
-***The application can only be run once so you must rerun the file to select another option.***
+***The application can only be run once so you must rerun the file to select another option.*** <br>
 To run the Brute Force Algorithm type:
 ```
 (menu)
@@ -197,3 +197,13 @@ To run the RPN with your own expression type:
 ## Built With ##
 
 * [The Racket programming language using DrRacket](https://racket-lang.org/) - The Racket Programming Environment version 6.7.    
+
+## References ##
+* http://www.datagenetics.com/blog/august32014/index.html
+* https://www.reddit.com/r/dailyprogrammer/comments/452omr/20160210_challenge_253_intermediate_countdown/
+* https://www.tutorialspoint.com/data_structures_algorithms/tree_data_structure.htm
+* http://www-stone.ch.cam.ac.uk/documentation/rrf/rpn.html
+* https://rosettacode.org/wiki/Parsing/RPN_calculator_algorithm#Racket
+* https://racket-lang.org/download/
+* https://www.youtube.com/watch?v=UOqcLGGKVr8
+* https://racket-lang.org/
